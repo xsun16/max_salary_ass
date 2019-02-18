@@ -1,111 +1,112 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "max_salary.h"
-int power(int m, int n){
-    	int res = 1;
-    	for (int i = 0; i < n; ++i) {
-        	res *= m;
-    	}
-    	return res;
+
+int is_better(int bsf, int c){
+	int length1 = digit_num(bsf);
+	int length2 = digit_num(c);
+	if (length1 == 1 && length2 == 1){
+		if(bsf > c){
+			return bsf;
+		}else{
+			return c;
+		}
+	}else{
+		int a = bsf;
+		int b = c;
+		int m [length1];
+		int n [length2];
+		int count = 0;
+		if(length1 == 1){
+			m[0] = bsf;
+		}else{	
+			for(int i = length1; i > 0; i --){
+				m[count] = a / ((int)pow(10, i - 1));
+				a = a % ((int)pow(10, i - 1));
+				count ++;
+			}
+			count = 0;
+		}
+		if(length2 == 1){
+			n[0] = c;
+		}else{
+			for(int i = length2; i > 0; i --){
+				n[count] = b / ((int)pow(10, i - 1));
+				b = b % ((int)pow(10, i - 1));
+				count ++;
+			}
+		}
+		int k = 0;
+		if(length1 > length2){
+			k = length2;
+		}
+		else{
+			k = length1;
+		}
+		for(int i = 0; i < k; i ++){
+			if(m[i] > n[i]){
+				return bsf;
+			}else if(m[i] < n[i]){
+				return c;
+			}else{
+				continue;
+			}
+		}
+		if(length1 > length2){
+			for(int j = length2; j < length1; j ++){
+				if(m[j] > n[length2 - 1]){
+					return bsf;
+				}else if(m[j] == n[length2 - 1])
+					continue;
+				else
+					return c;
+			}
+		}else{
+			for(int j = length1; j < length2; j ++){
+				if(n[j] > m[length1 - 1])
+					return c;
+				else if(n[j] == m[length1 - 1])
+					continue;
+				else
+					return bsf;
+			}
+		}
+	}
+	return 0;
+	
 }
 
-
-int count_digit(int num){
-    	int count;
-    	for(count=0;num>=1;count++){
-        	num = num / 10;
-    	}
-    	return count;
+int digit_num(int n){
+	if(n == 0){
+		return 1;
+	}else{
+		int k = floor(log10(abs(n))) + 1;
+		return k;
+	}
 }
 
-void print_array(int *arr, int size){
-    	for (int i=0; i<size; i++){
-        	printf("%d ",arr[i]);
-    	}
-    	printf("\n");
+int greedy(int a[], int size, int n){
+	int b [n];
+	int number = 0;
+	for(int j = 0; j < n; j ++){
+		b[j] = a[j];
+		number += digit_num(a[j]);
+	}
+	int max = 0;
+	int result = 0;
+	int index = 0;
+	while(n > 0){
+		for(int i = 0; i < n; i ++){
+			if(is_better(b[i], max) == b[i]){
+				index = i;
+				max = b[i];	
+			}
+		}
+		result += b[index] * (int)pow(10, number - digit_num(b[index]));
+		number -= digit_num(b[index]);
+		b[index] = b[size - 1];
+		b[size - 1] = 0;
+		size --;
+		n --;
+		max = 0;
+	}
+	return result;
 }
-
-char * int_to_string(int num){
-    	int len = count_digit(num);
-    	char * str = malloc(len);
-    	sprintf(str, "%d", num);
-    	return str;
-}
-
-
-int is_better(int best_so_far, int current){
-    	int len_so_far = count_digit(best_so_far);
-    	char * str_so_far = int_to_string(best_so_far);
-    	int len_current = count_digit(current);
-    	char * str_current = int_to_string(current);
-    	int index = 0;
-    	while (1) {
-        	if(index == len_so_far || index == len_current) break;
-        		if(str_so_far[index] > str_current[index]) {
-            			return 1;
-        		} else if(str_so_far[index] < str_current[index]){
-            			return 0;
-        		}
-        		index ++;
-    	}
-    	if (len_so_far > len_current) {
-        	return is_better(best_so_far - current * power(10, len_so_far - len_current), current);
-    	} else if(len_so_far < len_current){
-        	return is_better(best_so_far, current - best_so_far * power(10, len_current - len_so_far));
-    	} else {
-        	return 1;
-    	}
-}
-
-int judge_in(int num, int * arr, int size){
-    	for (int i = 0; i < size; ++i) {
-        	if(num == arr[i]) {
-            		return 1;
-        	}
-    	}
-    	return 0;
-}
-
-char * get_max_salary(int * arr, int size) {
-    	int index;
-    	int total_len = 0;
-    	for (int index = 0; index < size; ++index) {
-        	total_len += count_digit(arr[index]);
-    	}
-    	char * result = malloc(total_len);
-    	int * sub_list = malloc(sizeof(int) * size);
-    	for (int i = 0; i < size; ++i) {
-        	sub_list[i] = -1;
-    	}
-    	int current = -1;
-    	int current_index = -1;
-
-    	for (int j = 0; j < size; ++j) {
-        	current = arr[j];
-        	current_index = j;
-        	for (int k = 0; k < size; ++k) {
-            		if (judge_in(k, sub_list, size) || k == j) {
-                	continue;
-            	}
-            	int flag = is_better(current, arr[k]);
-            	if (flag != 1 || judge_in(current_index, sub_list, size)){
-                	current = arr[k];
-                	current_index = k;
-            	}
-        	}
-        	strcat(result, int_to_string(current));
-        	sub_list[current_index] = current_index;
-    	}
-    	return result;
-}
-
-/*
-void main() {
-    //225 766 625 84
-    //    int a[] = {225, 766, 625, 84};
-    //        int n = sizeof a/sizeof a[0];
-    //            char * m = get_max_salary(a, n);
-    //                printf("%s\n", m);
-    //                }
-*/
