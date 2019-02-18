@@ -10,17 +10,17 @@ int main(){
 			printf("%d ", a[i]);
 		}
 		printf("\n");
-		int result1 = 0;
+		int r1 = 0;
 		int n = 4;
-		heap_permutation(a, n, n, &result1);
-    		int result2 = greedy(a, n, n);
+		heap_permutation(a, n, n, &r1);
+    		int r2 = greedy(a, n, n);
 		    		
-   		if (result1 == result2){
+   		if (r1 == r2){
      			printf("OK\n");
-			printf("The maximum salary is %d\n", result2);
+			printf("The maximum salary is %d\n", r2);
 		}
     		else{
-      			printf("Wrong answer: correct=%d, got instead=%d\n", result1, result2);
+      			printf("Wrong answer: correct=%d, got instead=%d\n", r1, r2);
 	  		exit(0);
 		}
 	}
