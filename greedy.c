@@ -1,9 +1,9 @@
 #include "max_salary.h"
 
 int is_better(int bsf, int c){
-	int length1 = digit_num(bsf);
-	int length2 = digit_num(c);
-	if (length1 == 1 && length2 == 1){
+	int l1 = digit_num(bsf);
+	int l2 = digit_num(c);
+	if (l1 == 1 && l2 == 1){
 		if(bsf > c){
 			return bsf;
 		}else{
@@ -12,34 +12,34 @@ int is_better(int bsf, int c){
 	}else{
 		int a = bsf;
 		int b = c;
-		int m [length1];
-		int n [length2];
+		int m [l1];
+		int n [l2];
 		int count = 0;
-		if(length1 == 1){
+		if(l1 == 1){
 			m[0] = bsf;
 		}else{	
-			for(int i = length1; i > 0; i --){
+			for(int i = l1; i > 0; i --){
 				m[count] = a / ((int)pow(10, i - 1));
 				a = a % ((int)pow(10, i - 1));
 				count ++;
 			}
 			count = 0;
 		}
-		if(length2 == 1){
+		if(l2 == 1){
 			n[0] = c;
 		}else{
-			for(int i = length2; i > 0; i --){
+			for(int i = l2; i > 0; i --){
 				n[count] = b / ((int)pow(10, i - 1));
 				b = b % ((int)pow(10, i - 1));
 				count ++;
 			}
 		}
 		int k = 0;
-		if(length1 > length2){
-			k = length2;
+		if(l1 > l2){
+			k = l2;
 		}
 		else{
-			k = length1;
+			k = l1;
 		}
 		for(int i = 0; i < k; i ++){
 			if(m[i] > n[i]){
@@ -50,20 +50,20 @@ int is_better(int bsf, int c){
 				continue;
 			}
 		}
-		if(length1 > length2){
-			for(int j = length2; j < length1; j ++){
-				if(m[j] > n[length2 - 1]){
+		if(l1 > l2){
+			for(int j = l2; j < l1; j ++){
+				if(m[j] > n[l2 - 1]){
 					return bsf;
-				}else if(m[j] == n[length2 - 1])
+				}else if(m[j] == n[l2 - 1])
 					continue;
 				else
 					return c;
 			}
 		}else{
-			for(int j = length1; j < length2; j ++){
-				if(n[j] > m[length1 - 1])
+			for(int j = l1; j < l2; j ++){
+				if(n[j] > m[l1 - 1])
 					return c;
-				else if(n[j] == m[length1 - 1])
+				else if(n[j] == m[l1 - 1])
 					continue;
 				else
 					return bsf;
