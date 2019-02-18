@@ -1,5 +1,7 @@
 #include "max_salary.h"
 
+//bsf=best_so_far, c = current
+
 int is_better(int bsf, int c){
 	int l1 = digit_num(bsf);
 	int l2 = digit_num(c);
@@ -78,34 +80,36 @@ int digit_num(int n){
 	if(n == 0){
 		return 1;
 	}else{
-		int k = floor(log10(abs(n))) + 1;
-		return k;
+		int m = floor(log10(abs(n))) + 1;
+		return m;
 	}
 }
 
 int greedy(int a[], int size, int n){
-	int b [n];
-	int number = 0;
-	for(int j = 0; j < n; j ++){
-		b[j] = a[j];
-		number += digit_num(a[j]);
-	}
-	int max = 0;
 	int result = 0;
 	int index = 0;
+	int max = 0;
+	int num = 0;
+	int b[n];
+	
+	for(int j = 0; j < n; j ++){
+		b[j] = a[j];
+		num += digit_num(a[j]);
+	}
+
 	while(n > 0){
-		for(int i = 0; i < n; i ++){
+		for(int i = 0; i < n; i++){
 			if(is_better(b[i], max) == b[i]){
 				index = i;
 				max = b[i];	
 			}
 		}
-		result += b[index] * (int)pow(10, number - digit_num(b[index]));
-		number -= digit_num(b[index]);
+		result += b[index] * (int)pow(10, num - digit_num(b[index]));
+		num -= digit_num(b[index]);
 		b[index] = b[size - 1];
 		b[size - 1] = 0;
-		size --;
-		n --;
+		size--;
+		n--;
 		max = 0;
 	}
 	return result;
